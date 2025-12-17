@@ -13,11 +13,9 @@
   --brand:#1c8c6e;
   --border:#dcdcdc;
   --bg:#f6fbf9;
-  --icon-top:16px; /* ⭐ จุดอ้างอิงเดียวกันทั้งตาราง */
+  --icon-top:16px;
 }
-
-*{ box-sizing:border-box }
-
+*{box-sizing:border-box}
 body{
   font-family:"Prompt",sans-serif;
   background:var(--bg);
@@ -56,52 +54,34 @@ body{
   border-radius:18px;
   margin-bottom:22px;
 }
-.form-box h3{margin:0 0 14px}
-
 .form-grid{
   display:grid;
   grid-template-columns:repeat(6,1fr);
   gap:14px;
 }
 
-/* ===== Input Group (ICON ALIGNED) ===== */
-.input-group{
-  position:relative;
-  width:100%;
-}
-
+/* ===== Input ===== */
+.input-group{position:relative}
 .input-group i{
   position:absolute;
   left:14px;
-  top:var(--icon-top);   /* ⭐ ทุกไอคอนใช้ baseline เดียวกัน */
+  top:var(--icon-top);
   font-size:15px;
   color:#9aa3a0;
-  pointer-events:none;
 }
-
-/* input */
-.input-group input{
-  width:100%;
-  height:52px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:14px 14px 14px 42px; /* ⭐ padding-top เท่ากับ icon */
-  font-size:15px;
-  font-family:"Prompt",sans-serif;
-  background:#fff;
-}
-
-/* textarea */
+.input-group input,
 .input-group textarea{
   width:100%;
-  min-height:120px;
   border:1px solid var(--border);
   border-radius:14px;
-  padding:14px 14px 14px 42px; /* ⭐ ใช้ค่าเดียวกับ input */
+  padding:14px 14px 14px 42px;
   font-size:15px;
   font-family:"Prompt",sans-serif;
+}
+.input-group input{height:52px}
+.input-group textarea{
+  min-height:120px;
   resize:vertical;
-  background:#fff;
 }
 
 /* ===== Button ===== */
@@ -133,14 +113,16 @@ th,td{
   font-size:14px;
   vertical-align:top;
 }
-th{
-  background:#f2f7f5;
-  font-weight:500;
+th{background:#f2f7f5}
+.actions button{
+  width:auto;
+  padding:6px 10px;
+  font-size:14px;
+  border-radius:10px;
+  margin-right:6px;
 }
-td:nth-child(8){
-  white-space:pre-line;
-  line-height:1.5;
-}
+.actions .edit{background:#ffa726}
+.actions .delete{background:#ef5350}
 
 /* ===== Responsive ===== */
 @media(max-width:1024px){
@@ -168,32 +150,25 @@ td:nth-child(8){
 
 <div class="form-grid">
   <div class="input-group">
-    <input type="text" id="fDate" placeholder="DD/MM/YYYY"
-      inputmode="numeric" maxlength="10"
-      oninput="formatDate(this)">
+    <input id="fDate" placeholder="DD/MM/YYYY" inputmode="numeric" maxlength="10" oninput="formatDate(this)">
     <i class="fa-solid fa-calendar-days"></i>
   </div>
-
   <div class="input-group">
-    <input type="text" id="fName" placeholder="โรงพยาบาล">
+    <input id="fName" placeholder="โรงพยาบาล">
     <i class="fa-solid fa-hospital"></i>
   </div>
-
   <div class="input-group">
-    <input type="text" id="fContact" placeholder="ผู้ติดต่อ">
+    <input id="fContact" placeholder="ผู้ติดต่อ">
     <i class="fa-solid fa-user"></i>
   </div>
-
   <div class="input-group">
-    <input type="text" id="fDepartment" placeholder="แผนก">
+    <input id="fDepartment" placeholder="แผนก">
     <i class="fa-solid fa-sitemap"></i>
   </div>
-
   <div class="input-group">
-    <input type="text" id="fProvince" placeholder="จังหวัด">
+    <input id="fProvince" placeholder="จังหวัด">
     <i class="fa-solid fa-location-dot"></i>
   </div>
-
   <div class="input-group">
     <textarea id="fNote" placeholder="รายละเอียด"></textarea>
     <i class="fa-solid fa-clipboard"></i>
@@ -215,6 +190,7 @@ td:nth-child(8){
   <th>วันผ่านไป</th>
   <th>สถานะ</th>
   <th>รายละเอียด</th>
+  <th>จัดการ</th>
 </tr>
 </thead>
 <tbody id="tbody"></tbody>
@@ -224,7 +200,9 @@ td:nth-child(8){
 <script>
 const STORAGE_KEY="crm_follow_entries";
 let entries=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];
+let editIndex=null;
 
+/* ===== Utils ===== */
 function formatDate(i){
   let v=i.value.replace(/\D/g,'').slice(0,8);
   if(v.length>=5)i.value=v.replace(/(\d{2})(\d{2})(\d+)/,'$1/$2/$3');
@@ -244,24 +222,54 @@ function followClass(x){
 function followText(x){
   return x<=7?"ปกติ":x<=14?"ควรติดตาม":x<=21?"เร่งติดตาม":"เสี่ยงสูง";
 }
+
+/* ===== Save / Edit ===== */
 function saveEntry(){
   if(!fDate.value||!fName.value) return alert("กรอกข้อมูลไม่ครบ");
-  entries.push({
+  const data={
     date:fDate.value,
     name:fName.value,
     contact:fContact.value,
     dept:fDepartment.value,
     province:fProvince.value,
     note:fNote.value
-  });
+  };
+  if(editIndex!==null){
+    entries[editIndex]=data;
+    editIndex=null;
+  }else{
+    entries.push(data);
+  }
   localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));
-  fDate.value=fName.value=fContact.value=fDepartment.value=fProvince.value=fNote.value="";
+  clearForm();
   render();
 }
+function editEntry(i){
+  const e=entries[i];
+  fDate.value=e.date;
+  fName.value=e.name;
+  fContact.value=e.contact;
+  fDepartment.value=e.dept;
+  fProvince.value=e.province;
+  fNote.value=e.note;
+  editIndex=i;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function deleteEntry(i){
+  if(!confirm("ยืนยันลบรายการนี้?"))return;
+  entries.splice(i,1);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));
+  render();
+}
+function clearForm(){
+  fDate.value=fName.value=fContact.value=fDepartment.value=fProvince.value=fNote.value="";
+}
+
+/* ===== Render ===== */
 function render(){
   tbody.innerHTML="";
   let g=0,y=0,o=0,r=0;
-  entries.forEach(e=>{
+  entries.forEach((e,i)=>{
     const d=daysSince(e.date);
     const c=followClass(d);
     if(c==="follow-green")g++; else if(c==="follow-yellow")y++;
@@ -276,6 +284,10 @@ function render(){
         <td align="center">${d}</td>
         <td>${followText(d)}</td>
         <td>${e.note}</td>
+        <td class="actions">
+          <button class="edit" onclick="editEntry(${i})">✏️</button>
+          <button class="delete" onclick="deleteEntry(${i})">🗑️</button>
+        </td>
       </tr>`;
   });
   dGreen.textContent=g;
