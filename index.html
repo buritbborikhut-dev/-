@@ -6,14 +6,12 @@
 <title>CRM Follow Up</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 :root{
   --brand:#1c8c6e;
-  --border:#dcdcdc;
   --bg:#f6fbf9;
-  --icon-top:16px;
+  --border:#ddd;
 }
 *{box-sizing:border-box}
 body{
@@ -21,80 +19,62 @@ body{
   background:var(--bg);
   margin:0;
   padding:16px;
-  color:#333;
 }
 
 /* ===== Dashboard ===== */
 .dashboard{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
   gap:12px;
-  margin-bottom:20px;
+  margin-bottom:16px;
 }
-.card{
+.stat{
   background:#fff;
-  padding:16px;
   border-radius:14px;
+  padding:14px;
   text-align:center;
 }
-.card span{
+.stat span{
   display:block;
-  font-size:32px;
+  font-size:28px;
   font-weight:600;
 }
-.follow-green{background:#e6f7ee}
-.follow-yellow{background:#fff8d6}
-.follow-orange{background:#ffe3c2}
-.follow-red{background:#ffd6d6}
+.green{background:#e6f7ee}
+.yellow{background:#fff8d6}
+.orange{background:#ffe3c2}
+.red{background:#ffd6d6}
 
 /* ===== Form ===== */
 .form-box{
   background:#fff;
-  padding:20px;
+  padding:18px;
   border-radius:18px;
-  margin-bottom:22px;
+  margin-bottom:20px;
 }
 .form-grid{
   display:grid;
   grid-template-columns:repeat(6,1fr);
-  gap:14px;
+  gap:12px;
 }
-
-/* ===== Input ===== */
-.input-group{position:relative}
-.input-group i{
-  position:absolute;
-  left:14px;
-  top:var(--icon-top);
-  font-size:15px;
-  color:#9aa3a0;
-}
-.input-group input,
-.input-group textarea{
+input,textarea{
   width:100%;
   border:1px solid var(--border);
   border-radius:14px;
-  padding:14px 14px 14px 42px;
-  font-size:15px;
+  padding:12px;
   font-family:"Prompt",sans-serif;
+  font-size:15px;
 }
-.input-group input{height:52px}
-.input-group textarea{
-  min-height:120px;
-  resize:vertical;
-}
-
-/* ===== Button ===== */
-button{
+input{height:50px}
+textarea{min-height:110px;resize:vertical}
+button.main{
   width:100%;
-  margin-top:18px;
+  margin-top:14px;
   padding:14px;
-  font-size:16px;
   border:none;
   border-radius:16px;
   background:var(--brand);
   color:#fff;
-  cursor:pointer;
+  font-size:16px;
 }
 
 /* ===== Table ===== */
@@ -108,28 +88,110 @@ table{
   border-collapse:collapse;
 }
 th,td{
-  padding:12px 10px;
+  padding:12px;
   border-bottom:1px solid #eee;
   font-size:14px;
   vertical-align:top;
 }
 th{background:#f2f7f5}
-.actions button{
-  width:auto;
-  padding:6px 10px;
-  font-size:14px;
-  border-radius:10px;
-  margin-right:6px;
+
+/* 👉 คอลัมน์จัดการให้แคบ */
+th.col-action,
+td.col-action{
+  width:130px;
+  white-space:nowrap;
+  text-align:center;
 }
-.actions .edit{background:#ffa726}
-.actions .delete{background:#ef5350}
+
+/* 👉 รายละเอียดแสดงหลายบรรทัด */
+td.col-note{
+  white-space:pre-line;
+  line-height:1.5;
+  color:#555;
+}
+
+/* ===== Buttons ===== */
+.btn-action{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:8px 10px;          /* compact */
+  border:none;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:500;
+  color:#fff;
+  cursor:pointer;
+}
+.btn-action .icon{font-size:16px}
+
+.btn-edit{
+  background:linear-gradient(135deg,#ffb74d,#fb8c00);
+}
+.btn-delete{
+  background:linear-gradient(135deg,#ff6b6b,#e53935);
+  margin-top:6px;
+}
+
+/* ===== Mobile Cards ===== */
+.card-list{display:none}
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+  border-left:6px solid var(--brand);
+}
+.card.green{border-color:#2e7d32}
+.card.yellow{border-color:#f9a825}
+.card.orange{border-color:#ef6c00}
+.card.red{border-color:#c62828}
+.card .title{font-weight:600}
+.card .meta{font-size:14px;color:#666;margin-top:4px}
+.card .note{margin-top:8px;font-size:14px;color:#444}
+.card .actions{margin-top:12px}
+
+/* ===== Calendar ===== */
+.calendar{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.calendar-box{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  width:300px;
+}
+.calendar-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+  text-align:center;
+}
+.calendar-grid .day{
+  padding:8px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.calendar-grid .day:hover{background:#e6f7ee}
 
 /* ===== Responsive ===== */
-@media(max-width:1024px){
-  .form-grid{grid-template-columns:repeat(3,1fr)}
-}
 @media(max-width:768px){
   .form-grid{grid-template-columns:1fr}
+  .table-box{display:none}
+  .card-list{display:block}
 }
 </style>
 </head>
@@ -139,45 +201,25 @@ th{background:#f2f7f5}
 <h2>📊 CRM ระบบติดตามลูกค้า</h2>
 
 <div class="dashboard">
-  <div class="card follow-green">🟢 ปกติ<span id="dGreen">0</span></div>
-  <div class="card follow-yellow">🟡 ควรติดตาม<span id="dYellow">0</span></div>
-  <div class="card follow-orange">🟠 เร่งติดตาม<span id="dOrange">0</span></div>
-  <div class="card follow-red">🔴 เสี่ยงสูง<span id="dRed">0</span></div>
+  <div class="stat green">ปกติ<span id="dGreen">0</span></div>
+  <div class="stat yellow">ควรติดตาม<span id="dYellow">0</span></div>
+  <div class="stat orange">เร่งติดตาม<span id="dOrange">0</span></div>
+  <div class="stat red">เสี่ยงสูง<span id="dRed">0</span></div>
 </div>
 
 <div class="form-box">
-<h3>➕ เพิ่ม /✏️ แก้ไข การติดตาม</h3>
-
-<div class="form-grid">
-  <div class="input-group">
-    <input id="fDate" placeholder="DD/MM/YYYY" inputmode="numeric" maxlength="10" oninput="formatDate(this)">
-    <i class="fa-solid fa-calendar-days"></i>
-  </div>
-  <div class="input-group">
+  <div class="form-grid">
+    <input id="fDate" placeholder="วัน/เดือน/ปี (พ.ศ.)" readonly onclick="openCalendar()">
     <input id="fName" placeholder="โรงพยาบาล">
-    <i class="fa-solid fa-hospital"></i>
-  </div>
-  <div class="input-group">
     <input id="fContact" placeholder="ผู้ติดต่อ">
-    <i class="fa-solid fa-user"></i>
-  </div>
-  <div class="input-group">
     <input id="fDepartment" placeholder="แผนก">
-    <i class="fa-solid fa-sitemap"></i>
-  </div>
-  <div class="input-group">
     <input id="fProvince" placeholder="จังหวัด">
-    <i class="fa-solid fa-location-dot"></i>
-  </div>
-  <div class="input-group">
     <textarea id="fNote" placeholder="รายละเอียด"></textarea>
-    <i class="fa-solid fa-clipboard"></i>
   </div>
+  <button class="main" onclick="saveEntry()">💾 บันทึก</button>
 </div>
 
-<button onclick="saveEntry()">💾 บันทึก</button>
-</div>
-
+<!-- ===== Table (Desktop) ===== -->
 <div class="table-box">
 <table>
 <thead>
@@ -187,52 +229,83 @@ th{background:#f2f7f5}
   <th>ผู้ติดต่อ</th>
   <th>แผนก</th>
   <th>จังหวัด</th>
-  <th>วันผ่านไป</th>
-  <th>สถานะ</th>
+  <th>วัน</th>
   <th>รายละเอียด</th>
-  <th>จัดการ</th>
+  <th class="col-action">จัดการ</th>
 </tr>
 </thead>
 <tbody id="tbody"></tbody>
 </table>
 </div>
 
+<!-- ===== Mobile Cards ===== -->
+<div class="card-list" id="cardList"></div>
+
+<!-- Calendar -->
+<div class="calendar" id="calendar">
+  <div class="calendar-box">
+    <div class="calendar-header">
+      <button onclick="changeMonth(-1)">◀</button>
+      <div id="calTitle"></div>
+      <button onclick="changeMonth(1)">▶</button>
+    </div>
+    <div class="calendar-grid" id="calGrid"></div>
+  </div>
+</div>
+
 <script>
-const STORAGE_KEY="crm_follow_entries";
-let entries=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];
+const KEY="crm_entries";
+let entries=JSON.parse(localStorage.getItem(KEY))||[];
 let editIndex=null;
 
-/* ===== Utils ===== */
-function formatDate(i){
-  let v=i.value.replace(/\D/g,'').slice(0,8);
-  if(v.length>=5)i.value=v.replace(/(\d{2})(\d{2})(\d+)/,'$1/$2/$3');
-  else if(v.length>=3)i.value=v.replace(/(\d{2})(\d+)/,'$1/$2');
-  else i.value=v;
+/* ===== Calendar ===== */
+let cDate=new Date();
+function openCalendar(){
+  calendar.style.display="flex";
+  renderCalendar();
 }
+function changeMonth(n){
+  cDate.setMonth(cDate.getMonth()+n);
+  renderCalendar();
+}
+function renderCalendar(){
+  const y=cDate.getFullYear(), m=cDate.getMonth();
+  calTitle.textContent=
+    cDate.toLocaleString("th-TH",{month:"long"})+" "+(y+543);
+  calGrid.innerHTML="";
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  for(let i=0;i<first;i++)calGrid.innerHTML+="<div></div>";
+  for(let d=1;d<=days;d++){
+    const el=document.createElement("div");
+    el.className="day";
+    el.textContent=d;
+    el.onclick=()=>{
+      fDate.value=
+        `${String(d).padStart(2,"0")}/${String(m+1).padStart(2,"0")}/${y+543}`;
+      calendar.style.display="none";
+    };
+    calGrid.appendChild(el);
+  }
+}
+
+/* ===== Utils ===== */
 function parseDate(d){
-  const [dd,mm,yy]=d.split('/');
-  return new Date(`${yy}-${mm}-${dd}`);
+  const [dd,mm,yy]=d.split("/");
+  return new Date(yy-543,mm-1,dd);
 }
 function daysSince(d){
   return Math.floor((new Date()-parseDate(d))/86400000);
 }
-function followClass(x){
-  return x<=7?"follow-green":x<=14?"follow-yellow":x<=21?"follow-orange":"follow-red";
-}
-function followText(x){
-  return x<=7?"ปกติ":x<=14?"ควรติดตาม":x<=21?"เร่งติดตาม":"เสี่ยงสูง";
+function status(d){
+  return d<=7?"green":d<=14?"yellow":d<=21?"orange":"red";
 }
 
-/* ===== Save / Edit ===== */
+/* ===== Save / Edit / Delete ===== */
 function saveEntry(){
-  if(!fDate.value||!fName.value) return alert("กรอกข้อมูลไม่ครบ");
   const data={
-    date:fDate.value,
-    name:fName.value,
-    contact:fContact.value,
-    dept:fDepartment.value,
-    province:fProvince.value,
-    note:fNote.value
+    date:fDate.value,name:fName.value,contact:fContact.value,
+    dept:fDepartment.value,province:fProvince.value,note:fNote.value
   };
   if(editIndex!==null){
     entries[editIndex]=data;
@@ -240,8 +313,8 @@ function saveEntry(){
   }else{
     entries.push(data);
   }
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));
-  clearForm();
+  localStorage.setItem(KEY,JSON.stringify(entries));
+  fDate.value=fName.value=fContact.value=fDepartment.value=fProvince.value=fNote.value="";
   render();
 }
 function editEntry(i){
@@ -256,40 +329,64 @@ function editEntry(i){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 function deleteEntry(i){
-  if(!confirm("ยืนยันลบรายการนี้?"))return;
+  if(!confirm("ลบรายการนี้?")) return;
   entries.splice(i,1);
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));
+  localStorage.setItem(KEY,JSON.stringify(entries));
   render();
-}
-function clearForm(){
-  fDate.value=fName.value=fContact.value=fDepartment.value=fProvince.value=fNote.value="";
 }
 
 /* ===== Render ===== */
 function render(){
   tbody.innerHTML="";
+  cardList.innerHTML="";
   let g=0,y=0,o=0,r=0;
+
   entries.forEach((e,i)=>{
     const d=daysSince(e.date);
-    const c=followClass(d);
-    if(c==="follow-green")g++; else if(c==="follow-yellow")y++;
-    else if(c==="follow-orange")o++; else r++;
+    const s=status(d);
+    if(s==="green")g++;
+    else if(s==="yellow")y++;
+    else if(s==="orange")o++;
+    else r++;
+
     tbody.innerHTML+=`
-      <tr class="${c}">
+      <tr>
         <td>${e.date}</td>
         <td>${e.name}</td>
         <td>${e.contact}</td>
         <td>${e.dept}</td>
         <td>${e.province}</td>
-        <td align="center">${d}</td>
-        <td>${followText(d)}</td>
-        <td>${e.note}</td>
-        <td class="actions">
-          <button class="edit" onclick="editEntry(${i})">✏️</button>
-          <button class="delete" onclick="deleteEntry(${i})">🗑️</button>
+        <td>${d}</td>
+        <td class="col-note">${e.note||""}</td>
+        <td class="col-action">
+          <button class="btn-action btn-edit" onclick="editEntry(${i})">
+            <span class="icon"✏️</span>แก้ไข
+          </button>
+          <button class="btn-action btn-delete" onclick="deleteEntry(${i})">
+            <span class="icon">🗑️</span>ลบ
+          </button>
         </td>
-      </tr>`;
+      </tr>
+    `;
+
+    cardList.innerHTML+=`
+      <div class="card ${s}">
+        <div class="title">${e.name}</div>
+        <div class="meta">${e.contact} | ${e.dept}</div>
+        <div class="meta">${e.province} • ${e.date}</div>
+        <div class="note">${e.note||""}</div>
+        <div class="actions">
+          <button class="btn-action btn-edit" onclick="editEntry(${i})">
+            <span class="icon">✏️</span>แก้ไข
+          </button>
+          <button class="btn-action btn-delete" onclick="deleteEntry(${i})">
+            <span class="icon">🗑️</span>ลบ
+          </button>
+        </div>
+      </div>
+    `;
   });
+
   dGreen.textContent=g;
   dYellow.textContent=y;
   dOrange.textContent=o;
