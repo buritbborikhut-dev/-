@@ -95,7 +95,6 @@ th,td{
 }
 th{background:#f2f7f5}
 
-/* คอลัมน์จัดการ */
 th.col-action,
 td.col-action{
   width:130px;
@@ -103,7 +102,6 @@ td.col-action{
   text-align:center;
 }
 
-/* รายละเอียด */
 td.col-note{
   white-space:pre-line;
   line-height:1.5;
@@ -124,6 +122,7 @@ td.col-note{
   font-weight:500;
   color:#fff;
   cursor:pointer;
+  touch-action:manipulation;
 }
 .btn-action .icon{font-size:16px}
 
@@ -134,12 +133,6 @@ td.col-note{
 .btn-delete{
   background:linear-gradient(135deg,#ff6b6b,#e53935);
   margin-top:6px;
-
-  /* 🔴 FIX MOBILE DELETE */
-  pointer-events:auto;
-  touch-action:manipulation;
-  position:relative;
-  z-index:10;
 }
 
 /* ===== Mobile Cards ===== */
@@ -226,7 +219,6 @@ td.col-note{
   <button class="main" onclick="saveEntry()">💾 บันทึก</button>
 </div>
 
-<!-- ===== Table (Desktop) ===== -->
 <div class="table-box">
 <table>
 <thead>
@@ -245,10 +237,8 @@ td.col-note{
 </table>
 </div>
 
-<!-- ===== Mobile Cards ===== -->
 <div class="card-list" id="cardList"></div>
 
-<!-- Calendar -->
 <div class="calendar" id="calendar">
   <div class="calendar-box">
     <div class="calendar-header">
@@ -277,18 +267,18 @@ function changeMonth(n){
 }
 function renderCalendar(){
   const y=cDate.getFullYear(), m=cDate.getMonth();
-  calTitle.textContent=
+  calTitle.textContent =
     cDate.toLocaleString("th-TH",{month:"long"})+" "+(y+543);
   calGrid.innerHTML="";
   const first=new Date(y,m,1).getDay();
   const days=new Date(y,m+1,0).getDate();
-  for(let i=0;i<first;i++)calGrid.innerHTML+="<div></div>";
+  for(let i=0;i<first;i++) calGrid.innerHTML+="<div></div>";
   for(let d=1;d<=days;d++){
     const el=document.createElement("div");
     el.className="day";
     el.textContent=d;
     el.onclick=()=>{
-      fDate.value=
+      fDate.value =
         `${String(d).padStart(2,"0")}/${String(m+1).padStart(2,"0")}/${y+543}`;
       calendar.style.display="none";
     };
@@ -308,11 +298,15 @@ function status(d){
   return d<=7?"green":d<=14?"yellow":d<=21?"orange":"red";
 }
 
-/* ===== Save / Edit / Delete ===== */
+/* ===== Save / Edit ===== */
 function saveEntry(){
   const data={
-    date:fDate.value,name:fName.value,contact:fContact.value,
-    dept:fDepartment.value,province:fProvince.value,note:fNote.value
+    date:fDate.value,
+    name:fName.value,
+    contact:fContact.value,
+    dept:fDepartment.value,
+    province:fProvince.value,
+    note:fNote.value
   };
   if(editIndex!==null){
     entries[editIndex]=data;
@@ -335,12 +329,24 @@ function editEntry(i){
   editIndex=i;
   window.scrollTo({top:0,behavior:"smooth"});
 }
-function deleteEntry(i){
-  if(!confirm("ลบรายการนี้?")) return;
-  entries.splice(i,1);
-  localStorage.setItem(KEY,JSON.stringify(entries));
-  render();
-}
+
+/* ===== FIX iOS DELETE (pointerup) ===== */
+document.addEventListener("pointerup",function(e){
+  const btn=e.target.closest(".btn-delete");
+  if(!btn) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const index=btn.dataset.index;
+  if(index===undefined) return;
+
+  if(confirm("ลบรายการนี้?")){
+    entries.splice(index,1);
+    localStorage.setItem(KEY,JSON.stringify(entries));
+    render();
+  }
+});
 
 /* ===== Render ===== */
 function render(){
@@ -369,10 +375,7 @@ function render(){
           <button class="btn-action btn-edit" onclick="editEntry(${i})">
             <span class="icon"✏️</span>แก้ไข
           </button>
-          <button
-            class="btn-action btn-delete"
-            onclick="deleteEntry(${i})"
-            ontouchstart="event.stopPropagation(); deleteEntry(${i});">
+          <button class="btn-action btn-delete" data-index="${i}">
             <span class="icon">🗑️</span>ลบ
           </button>
         </td>
@@ -389,10 +392,7 @@ function render(){
           <button class="btn-action btn-edit" onclick="editEntry(${i})">
             <span class="icon">✏️</span>แก้ไข
           </button>
-          <button
-            class="btn-action btn-delete"
-            onclick="deleteEntry(${i})"
-            ontouchstart="event.stopPropagation(); deleteEntry(${i});">
+          <button class="btn-action btn-delete" data-index="${i}">
             <span class="icon">🗑️</span>ลบ
           </button>
         </div>
