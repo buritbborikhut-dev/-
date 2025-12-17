@@ -9,11 +9,21 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+:root{
+  --brand:#1c8c6e;
+  --border:#dcdcdc;
+  --bg:#f6fbf9;
+  --icon-top:16px; /* ⭐ จุดอ้างอิงเดียวกันทั้งตาราง */
+}
+
+*{ box-sizing:border-box }
+
 body{
   font-family:"Prompt",sans-serif;
-  background:#f6fbf9;
+  background:var(--bg);
   margin:0;
-  padding:20px;
+  padding:16px;
+  color:#333;
 }
 
 /* ===== Dashboard ===== */
@@ -25,15 +35,14 @@ body{
 }
 .card{
   background:#fff;
-  padding:14px;
-  border-radius:12px;
+  padding:16px;
+  border-radius:14px;
   text-align:center;
 }
 .card span{
   display:block;
-  font-size:26px;
+  font-size:32px;
   font-weight:600;
-  margin-top:4px;
 }
 .follow-green{background:#e6f7ee}
 .follow-yellow{background:#fff8d6}
@@ -44,80 +53,100 @@ body{
 .form-box{
   background:#fff;
   padding:20px;
-  border-radius:14px;
-  margin-bottom:20px;
+  border-radius:18px;
+  margin-bottom:22px;
 }
+.form-box h3{margin:0 0 14px}
 
-/* ⭐ ช่องเท่ากันทุกช่อง */
 .form-grid{
   display:grid;
-  grid-template-columns:repeat(6, minmax(0,1fr));
+  grid-template-columns:repeat(6,1fr);
   gap:14px;
-  align-items:stretch;
 }
 
-/* ===== Input Group ===== */
+/* ===== Input Group (ICON ALIGNED) ===== */
 .input-group{
   position:relative;
+  width:100%;
 }
 
 .input-group i{
   position:absolute;
-  left:12px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#999;
+  left:14px;
+  top:var(--icon-top);   /* ⭐ ทุกไอคอนใช้ baseline เดียวกัน */
+  font-size:15px;
+  color:#9aa3a0;
   pointer-events:none;
 }
 
-.input-group input,
-.input-group textarea{
+/* input */
+.input-group input{
   width:100%;
-  height:48px;                 /* ⭐ สูงเท่ากัน */
-  border:1px solid #ccc;
-  border-radius:10px;
-  padding:10px 12px 10px 36px;
+  height:52px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 14px 14px 42px; /* ⭐ padding-top เท่ากับ icon */
+  font-size:15px;
   font-family:"Prompt",sans-serif;
-  font-size:14px;
-  box-sizing:border-box;
+  background:#fff;
 }
 
-/* textarea เริ่มเท่ากัน แต่ขยายได้ */
+/* textarea */
 .input-group textarea{
+  width:100%;
+  min-height:120px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 14px 14px 42px; /* ⭐ ใช้ค่าเดียวกับ input */
+  font-size:15px;
+  font-family:"Prompt",sans-serif;
   resize:vertical;
-  line-height:1.5;
+  background:#fff;
 }
 
 /* ===== Button ===== */
 button{
-  margin-top:16px;
-  padding:10px 18px;
+  width:100%;
+  margin-top:18px;
+  padding:14px;
+  font-size:16px;
   border:none;
-  border-radius:10px;
-  background:#1c8c6e;
+  border-radius:16px;
+  background:var(--brand);
   color:#fff;
   cursor:pointer;
 }
 
 /* ===== Table ===== */
+.table-box{
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+}
 table{
   width:100%;
   border-collapse:collapse;
-  background:#fff;
 }
 th,td{
-  padding:12px;
-  border:1px solid #ddd;
+  padding:12px 10px;
+  border-bottom:1px solid #eee;
+  font-size:14px;
   vertical-align:top;
 }
-th{background:#eef7f4}
+th{
+  background:#f2f7f5;
+  font-weight:500;
+}
 td:nth-child(8){
   white-space:pre-line;
-  word-break:break-word;
+  line-height:1.5;
 }
 
 /* ===== Responsive ===== */
-@media(max-width:900px){
+@media(max-width:1024px){
+  .form-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:768px){
   .form-grid{grid-template-columns:1fr}
 }
 </style>
@@ -127,7 +156,6 @@ td:nth-child(8){
 
 <h2>📊 CRM ระบบติดตามลูกค้า</h2>
 
-<!-- ===== Dashboard ===== -->
 <div class="dashboard">
   <div class="card follow-green">🟢 ปกติ<span id="dGreen">0</span></div>
   <div class="card follow-yellow">🟡 ควรติดตาม<span id="dYellow">0</span></div>
@@ -135,13 +163,14 @@ td:nth-child(8){
   <div class="card follow-red">🔴 เสี่ยงสูง<span id="dRed">0</span></div>
 </div>
 
-<!-- ===== Form ===== -->
 <div class="form-box">
-<h3>➕ เพิ่ม / ✏️ แก้ไข การติดตาม</h3>
+<h3>➕ เพิ่ม /✏️ แก้ไข การติดตาม</h3>
 
 <div class="form-grid">
   <div class="input-group">
-    <input type="date" id="fDate" placeholder="mm/dd/yyyy">
+    <input type="text" id="fDate" placeholder="DD/MM/YYYY"
+      inputmode="numeric" maxlength="10"
+      oninput="formatDate(this)">
     <i class="fa-solid fa-calendar-days"></i>
   </div>
 
@@ -166,7 +195,7 @@ td:nth-child(8){
   </div>
 
   <div class="input-group">
-    <textarea id="fNote" placeholder="รายละเอียด (ขึ้นบรรทัดใหม่ได้)"></textarea>
+    <textarea id="fNote" placeholder="รายละเอียด"></textarea>
     <i class="fa-solid fa-clipboard"></i>
   </div>
 </div>
@@ -174,7 +203,7 @@ td:nth-child(8){
 <button onclick="saveEntry()">💾 บันทึก</button>
 </div>
 
-<!-- ===== Table ===== -->
+<div class="table-box">
 <table>
 <thead>
 <tr>
@@ -190,23 +219,33 @@ td:nth-child(8){
 </thead>
 <tbody id="tbody"></tbody>
 </table>
+</div>
 
 <script>
-let entries=[];
+const STORAGE_KEY="crm_follow_entries";
+let entries=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];
 
+function formatDate(i){
+  let v=i.value.replace(/\D/g,'').slice(0,8);
+  if(v.length>=5)i.value=v.replace(/(\d{2})(\d{2})(\d+)/,'$1/$2/$3');
+  else if(v.length>=3)i.value=v.replace(/(\d{2})(\d+)/,'$1/$2');
+  else i.value=v;
+}
+function parseDate(d){
+  const [dd,mm,yy]=d.split('/');
+  return new Date(`${yy}-${mm}-${dd}`);
+}
 function daysSince(d){
-  return Math.floor((new Date()-new Date(d))/(86400000));
+  return Math.floor((new Date()-parseDate(d))/86400000);
 }
-function followClass(days){
-  return days<=7?"follow-green":days<=14?"follow-yellow":days<=21?"follow-orange":"follow-red";
+function followClass(x){
+  return x<=7?"follow-green":x<=14?"follow-yellow":x<=21?"follow-orange":"follow-red";
 }
-function followText(days){
-  return days<=7?"ปกติ":days<=14?"ควรติดตาม":days<=21?"เร่งติดตาม":"เสี่ยงสูง";
+function followText(x){
+  return x<=7?"ปกติ":x<=14?"ควรติดตาม":x<=21?"เร่งติดตาม":"เสี่ยงสูง";
 }
-
 function saveEntry(){
   if(!fDate.value||!fName.value) return alert("กรอกข้อมูลไม่ครบ");
-
   entries.push({
     date:fDate.value,
     name:fName.value,
@@ -215,43 +254,36 @@ function saveEntry(){
     province:fProvince.value,
     note:fNote.value
   });
-
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(entries));
   fDate.value=fName.value=fContact.value=fDepartment.value=fProvince.value=fNote.value="";
   render();
 }
-
 function render(){
-  const tb=document.getElementById("tbody");
-  tb.innerHTML="";
+  tbody.innerHTML="";
   let g=0,y=0,o=0,r=0;
-
   entries.forEach(e=>{
-    const days=daysSince(e.date);
-    const cls=followClass(days);
-    if(cls==="follow-green")g++;
-    else if(cls==="follow-yellow")y++;
-    else if(cls==="follow-orange")o++;
-    else r++;
-
-    tb.innerHTML+=`
-      <tr class="${cls}">
+    const d=daysSince(e.date);
+    const c=followClass(d);
+    if(c==="follow-green")g++; else if(c==="follow-yellow")y++;
+    else if(c==="follow-orange")o++; else r++;
+    tbody.innerHTML+=`
+      <tr class="${c}">
         <td>${e.date}</td>
         <td>${e.name}</td>
         <td>${e.contact}</td>
         <td>${e.dept}</td>
         <td>${e.province}</td>
-        <td align="center">${days}</td>
-        <td>${followText(days)}</td>
+        <td align="center">${d}</td>
+        <td>${followText(d)}</td>
         <td>${e.note}</td>
-      </tr>
-    `;
+      </tr>`;
   });
-
   dGreen.textContent=g;
   dYellow.textContent=y;
   dOrange.textContent=o;
   dRed.textContent=r;
 }
+render();
 </script>
 
 </body>
