@@ -95,7 +95,7 @@ th,td{
 }
 th{background:#f2f7f5}
 
-/* 👉 คอลัมน์จัดการให้แคบ */
+/* คอลัมน์จัดการ */
 th.col-action,
 td.col-action{
   width:130px;
@@ -103,7 +103,7 @@ td.col-action{
   text-align:center;
 }
 
-/* 👉 รายละเอียดแสดงหลายบรรทัด */
+/* รายละเอียด */
 td.col-note{
   white-space:pre-line;
   line-height:1.5;
@@ -117,7 +117,7 @@ td.col-note{
   align-items:center;
   justify-content:center;
   gap:6px;
-  padding:8px 10px;          /* compact */
+  padding:8px 10px;
   border:none;
   border-radius:10px;
   font-size:14px;
@@ -130,9 +130,16 @@ td.col-note{
 .btn-edit{
   background:linear-gradient(135deg,#ffb74d,#fb8c00);
 }
+
 .btn-delete{
   background:linear-gradient(135deg,#ff6b6b,#e53935);
   margin-top:6px;
+
+  /* 🔴 FIX MOBILE DELETE */
+  pointer-events:auto;
+  touch-action:manipulation;
+  position:relative;
+  z-index:10;
 }
 
 /* ===== Mobile Cards ===== */
@@ -362,7 +369,10 @@ function render(){
           <button class="btn-action btn-edit" onclick="editEntry(${i})">
             <span class="icon"✏️</span>แก้ไข
           </button>
-          <button class="btn-action btn-delete" onclick="deleteEntry(${i})">
+          <button
+            class="btn-action btn-delete"
+            onclick="deleteEntry(${i})"
+            ontouchstart="event.stopPropagation(); deleteEntry(${i});">
             <span class="icon">🗑️</span>ลบ
           </button>
         </td>
@@ -379,7 +389,10 @@ function render(){
           <button class="btn-action btn-edit" onclick="editEntry(${i})">
             <span class="icon">✏️</span>แก้ไข
           </button>
-          <button class="btn-action btn-delete" onclick="deleteEntry(${i})">
+          <button
+            class="btn-action btn-delete"
+            onclick="deleteEntry(${i})"
+            ontouchstart="event.stopPropagation(); deleteEntry(${i});">
             <span class="icon">🗑️</span>ลบ
           </button>
         </div>
